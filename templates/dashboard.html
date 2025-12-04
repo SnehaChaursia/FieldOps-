@@ -1,168 +1,245 @@
-<!doctype html>
-<html>
-<head>
-  <title>Dashboard</title>
-  <style>
-    body {
-      font-family: "Inter", Arial, sans-serif;
-      background: #eef2f7;
-      margin: 0;
-      padding: 0;
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* ---------------- STAT CARDS ---------------- */
+    .stat-card {
+        border-radius: 18px;
+        padding: 28px;
+        color: white;
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        transition: 0.25s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
 
-    /* NAVBAR */
-    nav {
-      background: #1e3a8a;
-      color: #fff;
-      padding: 14px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    .stat-title {
+        font-size: 18px;
+        opacity: 0.9;
+    }
+    .stat-number {
+        font-size: 40px;
+        font-weight: 800;
     }
 
-    .nav-left a {
-      color: #cbd5e1;
-      text-decoration: none;
-      margin-right: 20px;
-      font-size: 15px;
-      font-weight: 500;
-      transition: 0.3s;
+    /* GRADIENT COLORS */
+    .grad-blue {
+        background: linear-gradient(135deg, #3a7bd5, #00d2ff);
     }
-    .nav-left a:hover {
-      color: #ffffff;
+    .grad-green {
+        background: linear-gradient(135deg, #05c46b, #0be881);
     }
-
-    .logout-btn {
-      background: #ef4444;
-      padding: 7px 14px;
-      border-radius: 6px;
-      color: white;
-      font-size: 14px;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .logout-btn:hover {
-      background: #dc2626;
+    .grad-red {
+        background: linear-gradient(135deg, #ff416c, #ff4b2b);
     }
 
-    /* MAIN CONTENT */
-    .container {
-      padding: 30px;
+    /* ---------------- TABLE ---------------- */
+    .table-box {
+        border-radius: 18px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 6px 18px rgba(174, 49, 206, 0.13);
+        background: white;
+        width: 100%;
     }
 
-    h1 {
-      color: #1e293b;
-      margin-bottom: 20px;
-      font-size: 26px;
+    .table {
+        width: 100%;
+        min-width: 1000px; /* Force wide table */
     }
 
-    /* CARDS */
-    .card-row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
+    .table thead th {
+        background: #10253aff;    /* dark light grey */
+        color: #f6f7efff;
+        padding: 16px;
+        font-size: 17px;
+        font-weight: 600;
     }
 
-    .card {
-      background: linear-gradient(135deg, #ffffff, #f0f4ff);
-      padding: 20px 24px;
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-      min-width: 170px;
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.12);
-    }
-    .card strong {
-      font-size: 15px;
-      color: #475569;
-      display: block;
-      margin-bottom: 5px;
-    }
-    .card-value {
-      font-size: 22px;
-      color: #1e3a8a;
-      font-weight: 700;
+    .table tbody tr {
+        height: 65px;
+        font-size: 16px;
     }
 
-    /* LIST */
-    h3 {
-      color: #1e3a8a;
-      margin-top: 10px;
+    .table tbody tr:hover {
+        background: #f5f6f7;
     }
 
-    ul {
-      background: #ffffff;
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-      list-style: none;
+    .card-header-custom {
+        background: white;
+        padding: 22px;
+        border-bottom: 2px solid #9c50e4ff;
+        font-size: 20px;
+        font-weight: 700;
     }
-    ul li {
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-      color: #334155;
-      display: flex;
-      justify-content: space-between;
-    }
-    ul li:last-child {
-      border-bottom: none;
-    }
-  </style>
-</head>
-<body>
 
-  <!-- NAVBAR -->
-  <nav>
-    <div class="nav-left">
-      <a href="{% url 'dashboard' %}">Dashboard</a>
-      <a href="{% url 'asset_list' %}">Assets</a>
-      <a href="{% url 'add_asset' %}">Add Asset</a>
-      <a href="{% url 'reservation_list' %}">Reservations</a>
-      <a href="{% url 'add_reservation' %}">Add Reservation</a>
+    /* ---------------- BADGES ---------------- */
+    .badge-soft-green {
+        background: #e8fbe9;
+        color: #0e8f3b;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    .badge-soft-red {
+        background: #ffe7e7;
+        color: #d21f3c;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    .badge-soft-purple {
+        background: #f3e8ff;
+        color: #7c3aed;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+</style>
+
+
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">Dashboard</h1>
+        <a href="{% url 'audit_log_list' %}" class="btn btn-dark px-4">
+        View Audit Logs
+    </a>
     </div>
 
-    <!-- Logout Button -->
-    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
-  </nav>
+    <!-- STAT CARDS -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="stat-card grad-blue">
+                <p class="stat-title">Total Assets</p>
+                <h2 class="stat-number">{{ total_assets }}</h2>
+            </div>
+        </div>
 
-  <div class="container">
+        <div class="col-md-4">
+            <div class="stat-card grad-green">
+                <p class="stat-title">Available</p>
+                <h2 class="stat-number">{{ available_assets }}</h2>
+            </div>
+        </div>
 
-    <h1>Welcome to FieldOps Tracker</h1>
-
-    <div class="card-row">
-      <div class="card">
-        <strong>Total Assets</strong>
-        <div class="card-value">{{ total_assets }}</div>
-      </div>
-
-      <div class="card">
-        <strong>Available</strong>
-        <div class="card-value">{{ available_assets }}</div>
-      </div>
-
-      <div class="card">
-        <strong>Unavailable</strong>
-        <div class="card-value">{{ unavailable_assets }}</div>
-      </div>
+        <div class="col-md-4">
+            <div class="stat-card grad-red">
+                <p class="stat-title">Unavailable</p>
+                <h2 class="stat-number">{{ unavailable_assets }}</h2>
+            </div>
+        </div>
     </div>
 
-    <h3>Recent Assets</h3>
-    <ul>
-      {% for a in recent_assets %}
-        <li>
-          <span>{{ a.name }} - {{ a.category }}</span>
-          <span>{{ a.status }}</span>
-        </li>
-      {% empty %}
-        <li>No recent assets.</li>
-      {% endfor %}
-    </ul>
 
-  </div>
-</body>
-</html>
+
+    <!-- RECENT ASSETS -->
+    <div class="card shadow-sm border-0 mt-5 table-box">
+
+        <div class="card-header-custom">Recent Assets</div>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+
+                <thead>
+                    <tr>
+                        <th class="ps-4">Name</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th class="pe-4"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for a in recent_assets %}
+                    <tr>
+                        <td class="fw-semibold ps-4">{{ a.name }}</td>
+                        <td>{{ a.category }}</td>
+                        <td>
+                            {% if a.status == "available" %}
+                                <span class="badge-soft-green">Available</span>
+                            {% elif a.status == "unavailable" %}
+                                <span class="badge-soft-red">Unavailable</span>
+                            {% elif a.status == "checked_out" %}
+                                <span class="badge-soft-purple">Checked Out</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No recent assets.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+
+
+
+    <!-- RECENT MAINTENANCE -->
+    <div class="card shadow-sm border-0 mt-5 table-box">
+
+        <div class="card-header-custom">Recent Maintenance</div>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+
+                <thead>
+                    <tr>
+                        <th class="ps-4">Asset</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for m in recent_maintenances %}
+                    <tr>
+                        <td class="ps-4 fw-semibold">
+                            {{ m.asset.name }} ({{ m.asset.serial_number }})
+                        </td>
+
+                        <td>{{ m.start_date|date:"d M Y H:i" }}</td>
+                        <td>{{ m.end_date|date:"d M Y H:i" }}</td>
+
+                        <td>
+                            {% if m.status == "in_progress" %}
+                                <span class="badge-soft-purple">In Progress</span>
+                            {% else %}
+                                <span class="badge-soft-green">Done</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No recent maintenance.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

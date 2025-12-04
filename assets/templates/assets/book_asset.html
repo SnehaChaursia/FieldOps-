@@ -1,34 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>Book an Asset</h2>
+{% extends "base.html" %}
 
-<form method="POST">
-    {% csrf_token %}
+{% block title %}Book an Asset{% endblock %}
 
-    <label>Select Asset:</label>
-    <select name="asset" required>
-        {% for a in assets %}
-        <option value="{{ a.id }}">{{ a.name }} ({{ a.status }})</option>
-        {% endfor %}
-    </select><br><br>
+{% block content %}
 
-    <label>Check-In DateTime:</label>
-    <input type="datetime-local" name="check_in" required><br><br>
+<div style="
+    max-width:520px;
+    margin:auto;
+    background:white;
+    padding:24px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+">
+    <h2 style="text-align:center; color:#1f2937; margin-bottom:20px;">
+        Book an Asset
+    </h2>
 
-    <label>Check-Out DateTime:</label>
-    <input type="datetime-local" name="check_out" required><br><br>
+    <form method="POST">
+        {% csrf_token %}
 
-    <label>Purpose:</label>
-    <textarea name="purpose"></textarea><br><br>
+        <!-- Asset dropdown -->
+        <label style="font-weight:600; display:block; margin-bottom:6px;">Select Asset:</label>
+        <select name="asset" required
+            style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; margin-bottom:16px;">
+            {% for a in assets %}
+            <option value="{{ a.id }}">{{ a.name }} ({{ a.status }})</option>
+            {% endfor %}
+        </select>
 
-    <button type="submit">Book Asset</button>
-</form>
+        <!-- Check in -->
+        <label style="font-weight:600; display:block; margin-bottom:6px;">Check-In DateTime:</label>
+        <input type="datetime-local" name="check_in" required
+            style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; margin-bottom:16px;">
 
-</body>
-</html>
+        <!-- Check out -->
+        <label style="font-weight:600; display:block; margin-bottom:6px;">Check-Out DateTime:</label>
+        <input type="datetime-local" name="check_out" required
+            style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; margin-bottom:16px;">
+
+        <!-- Purpose -->
+        <label style="font-weight:600; display:block; margin-bottom:6px;">Purpose:</label>
+        <textarea name="purpose"
+            style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; height:100px; margin-bottom:18px;"></textarea>
+
+        <button type="submit" style="
+            width:100%;
+            background:#2563eb;
+            color:white;
+            padding:12px;
+            border:none;
+            border-radius:8px;
+            font-size:15px;
+            cursor:pointer;
+        ">Book Asset</button>
+    </form>
+</div>
+
+{% endblock %}

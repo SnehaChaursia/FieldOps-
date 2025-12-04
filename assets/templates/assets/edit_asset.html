@@ -1,107 +1,156 @@
-<!doctype html>
-<html>
-<head>
-  <title>Edit Asset</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 0 20px 40px;
-    }
-    nav {
-      background: #1f2933;
-      color: #fff;
-      padding: 10px 20px;
-      margin: 0 -20px 20px;
-    }
-    nav a {
-      color: #e5e7eb;
-      text-decoration: none;
-      margin-right: 12px;
-      font-size: 14px;
-    }
-    nav a:hover {
-      color: #ffffff;
-      text-decoration: underline;
-    }
-    h1 {
-      color: #111827;
-    }
-    .form-card {
-      max-width: 480px;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
-    label {
-      display: block;
-      font-weight: 600;
-      margin-top: 10px;
-      margin-bottom: 4px;
-    }
-    input[type="text"],
-    select,
-    input[type="file"] {
-      width: 100%;
-      padding: 7px 8px;
-      border-radius: 5px;
-      border: 1px solid #d1d5db;
-      font-size: 14px;
-    }
-    button {
-      margin-top: 16px;
-      padding: 8px 14px;
-      border-radius: 5px;
-      border: none;
-      background: #2563eb;
-      color: #ffffff;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    button:hover {
-      background: #1d4ed8;
-    }
-  </style>
-</head>
-<body>
-  <nav>
-    <a href="{% url 'dashboard' %}">Home</a> |
-    <a href="{% url 'asset_list' %}">Assets</a> |
-    <a href="{% url 'add_asset' %}">Add Asset</a> |
-    <a href="{% url 'reservation_list' %}">Reservations</a> |
-    <a href="{% url 'add_reservation' %}">Add Reservation</a>
-  </nav>
+{% extends "base.html" %}
 
-  <h1>Edit Asset</h1>
-  <div class="form-card">
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <label>Name</label>
-      <input name="name" value="{{ asset.name }}">
+{% block title %}Edit Asset{% endblock %}
 
-      <label>Serial</label>
-      <input name="serial_number" value="{{ asset.serial_number }}">
+{% block content %}
 
-      <label>Category</label>
-      <input name="category" value="{{ asset.category }}">
+<style>
+    .page-title-box {
+        background: linear-gradient(135deg, #b346e5ff, #6366f1);
+        padding: 22px;
+        border-radius: 14px;
+        color: white;
+        text-align: center;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    }
 
-      <label>Location</label>
-      <input name="location" value="{{ asset.location }}">
+    .preview-box {
+        border: 1px solid #6852b8ff;
+        border-radius: 12px;
+        padding: 15px;
+        background: linear-gradient(135deg, #b97ed4ff, #8788d3ff);
+        text-align: center;
+    }
 
-      <label>Status</label>
-      <select name="status">
-        <option value="available" {% if asset.status == 'available' %}selected{% endif %}>Available</option>
-        <option value="unavailable" {% if asset.status == 'unavailable' %}selected{% endif %}>Unavailable</option>
-        <option value="checked_out" {% if asset.status == 'checked_out' %}selected{% endif %}>Checked Out</option>
-      </select>
+    .preview-box img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
 
-      <label>Image</label>
-      <input type="file" name="image">
+    .form-section-title {
+        font-size: 17px;
+        font-weight: 600;
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
+</style>
 
-      <button type="submit">Save</button>
-    </form>
-  </div>
-</body>
-</html>
+<!-- PAGE TITLE BAR -->
+<div class="page-title-box">
+    <h1 class="fw-bold m-0" style="font-size:30px;">Edit Asset</h1>
+</div>
+
+<div class="container">
+
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <!-- PREVIEW BOXES (IMAGE + QR) -->
+                    <div class="row mb-4">
+
+                        <!-- IMAGE PREVIEW -->
+                        <div class="col-md-6 mb-3">
+                            <div class="preview-box">
+                                <h6 class="fw-semibold mb-2">Current Image</h6>
+
+                                {% if asset.image %}
+                                    <img src="{{ asset.image.url }}" alt="Asset Image">
+                                {% else %}
+                                    <p class="text-muted small">No image uploaded</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- QR PREVIEW -->
+                        <div class="col-md-6 mb-3">
+                            <div class="preview-box">
+                                <h6 class="fw-semibold mb-2">QR Code</h6>
+
+                                {% if asset.qr_code %}
+                                    <img src="{{ asset.qr_code.url }}" alt="QR Code">
+                                {% else %}
+                                    <p class="text-muted small">No QR code available</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- FORM TITLE -->
+                    <div class="form-section-title">Asset Details</div>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Asset Name</label>
+                            <input type="text" name="name" value="{{ asset.name }}" 
+                                   class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Serial Number</label>
+                            <input type="text" name="serial_number" value="{{ asset.serial_number }}" 
+                                   class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Category</label>
+                            <input type="text" name="category" value="{{ asset.category }}" 
+                                   class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Location</label>
+                            <input type="text" name="location" value="{{ asset.location }}" 
+                                   class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Status</label>
+                            <select name="status" class="form-select form-select-lg rounded-3">
+                                <option value="available" {% if asset.status == 'available' %}selected{% endif %}>Available</option>
+                                <option value="unavailable" {% if asset.status == 'unavailable' %}selected{% endif %}>Unavailable</option>
+                                <option value="checked_out" {% if asset.status == 'checked_out' %}selected{% endif %}>Checked Out</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Replace Image</label>
+                            <input type="file" name="image" class="form-control rounded-3">
+                        </div>
+
+                     <div class="d-grid mt-4">
+                        <button type="submit"
+                            class="btn btn-lg fw-semibold rounded-3"
+                            style="
+                                background: linear-gradient(135deg, #b346e5ff, #6366f1);
+                                border: none;
+                                color: white;
+                                font-size: 18px;
+                                padding: 12px;
+                                box-shadow: 0 4px 12px rgba(140, 82, 255, 0.3);
+                                transition: 0.2s;
+                            "
+                            onmouseover="this.style.opacity='0.9'"
+                            onmouseout="this.style.opacity='1'">
+                            Save Changes
+                        </button>
+                     </div>
+
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

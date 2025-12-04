@@ -12,6 +12,7 @@ class Asset(models.Model):
         ("available", "Available"),
         ("unavailable", "Unavailable"),
         ("checked_out", "Checked Out"),
+        ("maintenance", "Maintenance"),
     ]
 
     name = models.CharField(max_length=255)
@@ -64,7 +65,62 @@ class Reservation(models.Model):
     check_out = models.DateTimeField()
     days = models.PositiveIntegerField()
     status = models.CharField(max_length=20, default="booked")
+    def checkout_asset(self):    
+        self.status = "checked_out"
+        self.save()
+
+        # make asset available again
+        self.asset.status = "available"
+        self.asset.save()
 
     def __str__(self):
         return f"{self.user_name} -> {self.asset.name} ({self.status})"
+    
+class Maintenance(models.Model):
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE, related_name='maintenances')
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    hours = models.PositiveIntegerField(null=True, blank=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("in_progress", "In Progress"),
+            ("done", "Done")
+        ],
+        default="in_progress"
+    )
+    notes = models.TextField(blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Update asset status automatically
+        if self.status == "in_progress":
+            self.asset.status = "maintenance"
+        elif self.status == "done":
+            self.asset.status = "available"
+        self.asset.save()
+
+    def __str__(self):
+        return f"{self.asset.name} ({self.status})"
+
+
+class AuditLog(models.Model):
+    ACTION_CHOICES = [
+        ("created", "Asset Created"),
+        ("updated", "Asset Updated"),
+        ("checked_out", "Checked Out"),
+        ("returned", "Returned"),
+        ("status_changed", "Status Changed"),
+        ("maintenance_created", "Maintenance Created"),
+        ("maintenance_completed", "Maintenance Completed"),
+    ]
+
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE, null=True, blank=True)
+    action = models.CharField(max_length=50, choices=ACTION_CHOICES)
+    description = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return f"{self.action} - {self.asset}"

@@ -1,181 +1,99 @@
-<!doctype html>
-<html>
-<head>
-  <title>Add Asset</title>
- <style>
-  body {
-    font-family: 'Inter', Arial, sans-serif;
-    background: #eef1f5;
-    margin: 0;
-    padding: 0 20px 40px;
-  }
+{% extends "base.html" %}
 
-  /* Navigation Bar */
-  nav {
-    background: #111827;
-    color: #fff;
-    padding: 14px 24px;
-    margin: 0 -20px 30px -20px;
-    display: flex;
-    gap: 18px;
-    align-items: center;
-    font-size: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-  }
+{% block title %}Add Asset{% endblock %}
 
-  nav a {
-    color: #d1d5db;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.2s ease;
-  }
+{% block content %}
 
-  nav a:hover {
-    color: #ffffff;
-    text-decoration: underline;
-  }
+<div class="container mt-4">
 
-  /* Title */
-  h1 {
-    color: #1f2937;
-    margin-bottom: 24px;
-    text-align: center;
-    font-size: 28px;
-    font-weight: 700;
-  }
+    <!-- Page Header -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold" style="color:#1f2937;">Add Asset</h1>
+    </div>
 
-  /* Form Card */
-  .form-card {
-    max-width: 480px;
-    background: #ffffff;
-    padding: 32px;
-    border-radius: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-    border: 1px solid #e5e7eb;
-    margin: 0 auto; 
-  }
+    <!-- Success Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success fw-semibold">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-  /* Form layout fix */
-  .form-card form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;  /* consistent spacing */
-  }
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
 
-  label {
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 4px;
-  }
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
 
-input[type="text"],
-input {
-  width: 100%;
-  padding: 14px 12px;
-  line-height: 22px;        /* increases box height */
-  height: 40px !important;  /* FORCES bigger height */
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  font-size: 16px;
-  background: #f9fafb;
-  box-sizing: border-box;
-  display: block;           /* important to apply height */
-}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
 
-input[type="file"] {
-  padding: 10px;
-  height: auto;
-}
+                        <!-- NAME -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Asset Name</label>
+                            <input type="text"
+                                   name="name"
+                                   required
+                                   class="form-control form-control-lg">
+                        </div>
 
+                        <!-- SERIAL -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Serial Number</label>
+                            <input type="text"
+                                   name="serial_number"
+                                   required
+                                   class="form-control form-control-lg">
+                        </div>
 
-  input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-    outline: none;
-  }
+                        <!-- CATEGORY -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Category</label>
+                            <input type="text"
+                                   name="category"
+                                   class="form-control form-control-lg">
+                        </div>
 
-  button {
-    padding: 12px 16px;
-    border-radius: 8px;
-    border: none;
-    background: #2563eb;
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    transition: 0.25s ease;
-    width: 100%;
-  }
+                        <!-- LOCATION -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Location</label>
+                            <input type="text"
+                                   name="location"
+                                   class="form-control form-control-lg">
+                        </div>
 
-  button:hover {
-    background: #1e40af;
-  }
+                        <!-- IMAGE -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Upload Image</label>
+                            <input type="file"
+                                   name="image"
+                                   class="form-control">
+                        </div>
 
-  button:active {
-    transform: scale(0.97);
-  }
+                        <!-- SUBMIT BUTTON -->
+                        <div class="d-grid mt-3">
+                            <button type="submit"
+                                class="btn btn-lg fw-semibold rounded-3"
+                                style="
+                                    background: linear-gradient(135deg, #2e2cc5ff, #d6b4ff);
+                                    border: none;
+                                    color: white;
+                                    box-shadow: 0 4px 10px rgba(149, 92, 255, 0.3);
+                                ">
+                                Create Asset
+                            </button>
+                        </div>
 
-  /* Responsive */
-  @media (max-width: 600px) {
-    .form-card {
-      padding: 24px;
-      margin: 0 10px;
-    }
-  }
-</style>
+                    </form>
 
+                </div>
+            </div>
 
-  </style>
-</head>
-<body>
-  
-  <nav>
-    <a href="{% url 'dashboard' %}">Home</a> |
-    <a href="{% url 'asset_list' %}">Assets</a> |
-    <a href="{% url 'add_asset' %}">Add Asset</a> |
-    <a href="{% url 'reservation_list' %}">Reservations</a> |
-    <a href="{% url 'add_reservation' %}">Add Reservation</a>
-  </nav>
-  
-  <h1>Add Asset</h1>
-  <div class="form-card">
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <label>Name</label>
-      <input name="name" required>
-      
-      <label>Serial</label>
-      <input name="serial_number" required>
-      
-      <label>Category</label>
-      <input name="category">
-      
-      <label>Location</label>
-      <input name="location">
-      
-      <label>Image</label>
-      <input type="file" name="image">
-      
-      <button type="submit">Create</button>
-    </form>
-  </div>
-  
-  {% if messages %}
-  <div>
-    {% for message in messages %}
-      <div class="alert alert-success" style="
-            background: #d1fae5;
-            color: #065f46;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            border: 1px solid #34d399;
-            font-size: 16px;">
-        {{ message }}
-      </div>
-    {% endfor %}
-  </div>
-{% endif %}
+        </div>
+    </div>
 
-</body>
-</html>
+</div>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Maintenance Board{% endblock %}
+
+{% block content %}
+<style>
+    /* Gradient Header */
+    .gradient-header {
+        background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+    }
+
+    /* Table background subtle color */
+    .table-bg {
+        background: #f7f2ff !important;
+    }
+
+    /* Status Badges */
+    .badge-progress {
+        background-color: #ff4d4d !important; /* Red */
+        color: white !important;
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+
+    .badge-done {
+        background-color: #28a745 !important; /* Green */
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+
+    /* Card Shadow */
+    .custom-card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <div class="card shadow-lg custom-card">
+        <div class="card-header text-white gradient-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">🛠 Maintenance Board</h4>
+            <a href="{% url 'add_maintenance' %}" class="btn btn-light btn-sm fw-bold">
+                + Add Maintenance
+            </a>
+        </div>
+
+        <div class="card-body table-bg">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="table-responsive mt-3">
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Asset</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Hours</th>
+                            <th>Cost (₹)</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for m in maintenances %}
+                        <tr>
+                            <td>
+                                <strong>{{ m.asset.name }}</strong><br>
+                                <small class="text-muted">{{ m.asset.serial_number }}</small>
+                            </td>
+
+                            <td>{{ m.start_date|date:"d M Y H:i" }}</td>
+                            <td>{{ m.end_date|date:"d M Y H:i" }}</td>
+
+                            <td>
+                                {% if m.hours %}
+                                    {{ m.hours }} hr
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if m.cost %}
+                                    ₹{{ m.cost }}
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if m.status == "in_progress" %}
+                                    <span class="badge-progress">⏳ In Progress</span>
+                                {% else %}
+                                    <span class="badge-done">✔ Done</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if m.status == "in_progress" %}
+                                    <a href="{% url 'complete_maintenance' m.id %}" 
+                                       class="btn btn-success btn-sm px-3">
+                                       ✓ Mark Done
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <h5>No maintenance scheduled</h5>
+                                <a href="{% url 'add_maintenance' %}" class="btn btn-dark btn-sm mt-2">
+                                    + Add Maintenance
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

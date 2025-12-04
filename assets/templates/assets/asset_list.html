@@ -1,160 +1,189 @@
-<!doctype html>
-<html>
-<head>
-  <title>Assets</title>
-  <style>
-  body {
-    font-family: 'Inter', Arial, sans-serif;
-    background: #eef1f5;
-    margin: 0;
-    padding: 0 20px 40px;
-  }
+{% extends "base.html" %}
 
-  nav { 
-    background: #111827;
-    color: #fff;
-    padding: 14px 24px;
-    margin: 0 -20px 30px -20px;
-    display: flex;
-    gap: 18px;
-    align-items: center;
-    font-size: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-  }
+{% block title %}All Assets{% endblock %}
 
-  nav a {
-    color: #d1d5db;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.2s;
-  }
-  nav a:hover {
-    color: #fff;
-    text-decoration: underline;
-  }
+{% block content %}
 
-  h1 {
-    color: #1f2937;
-    margin-bottom: 20px;
-    font-size: 26px;
-    text-align: center;
-  }
+<style>
 
-  /* TABLE */
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 10px;
-    overflow: hidden;
-  }
+    /* Page Title Gradient Box */
+    .page-title-box {
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        color: white;
+        margin-bottom: 30px;
+        text-align: center;
+    }
 
-  th {
-    background: #f3f4f6;
-    padding: 14px;
-    font-weight: 600;
-    font-size: 15px;
-    color: #374151;
-    border-bottom: 2px solid #e5e7eb;
-    text-align: left;   /* alignment fixed */
-  }
+    /* Main Card */
+    .asset-card {
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+        background: white;
+        padding: 0;
+    }
 
-  td {
-    padding: 12px 14px;
-    font-size: 14px;
-    color: #374151;
-    border-bottom: 1px solid #e5e7eb;
-  }
+    /* Bigger Table Text + Spacing */
+    .table td, 
+    .table th {
+        font-size: 16px;
+        padding: 16px 20px !important;
+        white-space: nowrap; 
+    }
 
-  tr:hover td {
-    background: #f9fafb;
-  }
+    /* Table Header Gradient */
+    .gradient-table-header {
+        background: linear-gradient(135deg, #dbe4ff, #eef2ff);
+        font-size: 17px;
+        font-weight: 700;
+    }
 
-  tr:last-child td {
-    border-bottom: none;
-  }
+    /* Make Table Height Big (Vertical Scroll Only) */
+    .big-table-container {
+        max-height: 620px;    /* <-- INCREASE TABLE HEIGHT HERE */
+        overflow-y: auto;      /* vertical scroll only */
+        overflow-x: hidden;    /* no horizontal scroll EVER */
+    }
 
-  /* --- BUTTON STYLES --- */
+    /* Scrollbar style */
+    .big-table-container::-webkit-scrollbar {
+        width: 7px;
+    }
+    .big-table-container::-webkit-scrollbar-thumb {
+        background: #c7cde5;
+        border-radius: 10px;
+    }
 
-  .btn-view {
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: #3b82f6;       /* light blue */
-    color: #fff;
-    font-size: 12px;
-    border: none;
-    cursor: pointer;
-  }
-  .btn-view:hover {
-    background: #2563eb;
-  }
+    /* Status Badges */
+    .badge-soft-success {
+        background: #d1fae5;
+        color: #047857;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+    .badge-soft-danger {
+        background: #fee2e2;
+        color: #b91c1c;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+    .badge-soft-purple {
+        background: #f3e8ff;
+        color: #7c3aed;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+    }
 
-  .btn-edit {
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: #a855f7;       /* light purple */
-    color: #fff;
-    font-size: 12px;
-    border: none;
-    cursor: pointer;
-  }
-  .btn-edit:hover {
-    background: #9333ea;
-  }
+    /* Buttons */
+    .btn-action {
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        margin-right: 6px;
+        transition: 0.2s;
+    }
+    .btn-view { background: #3b82f6; color:white; }
+    .btn-view:hover { background:#2563eb; }
 
-  .btn-delete {
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: #f87171;       /* light red */
-    color: #fff;
-    font-size: 12px;
-    border: none;
-    cursor: pointer;
-  }
-  .btn-delete:hover {
-    background: #ef4444;
-  }
+    .btn-edit { background: #a855f7; color:white; }
+    .btn-edit:hover { background:#9333ea; }
+
+    .btn-delete { background:#ef4444; color:white; }
+    .btn-delete:hover { background:#dc2626; }
+
+    /* Hover Effect */
+    tbody tr {
+        transition: all 0.25s;
+    }
+    tbody tr:hover {
+        background: #f3f4f6 !important;
+        transform: scale(1.005);
+    }
+
 </style>
 
+<!-- Title -->
+<div class="page-title-box">
+    <h1 class="fw-bold m-0" style="font-size:34px;">All Assets</h1>
+</div>
 
-</head>
-<body>
-  <nav>
-    <a href="{% url 'dashboard' %}">Home</a> |
-    <a href="{% url 'asset_list' %}">Assets</a> |
-    <a href="{% url 'add_asset' %}">Add Asset</a> |
-    <a href="{% url 'reservation_list' %}">Reservations</a> |
-    <a href="{% url 'add_reservation' %}">Add Reservation</a>
-  </nav>
+<!-- Main Card -->
+<div class="asset-card">
 
-  <h1>All Assets</h1>
-  <table>
-    <tr><th>Name</th><th>Serial</th><th>Category</th><th>Status</th><th>Actions</th></tr>
-    {% for a in assets %}
-    <tr>
-      <td>{{ a.name }}</td>
-      <td>{{ a.serial_number }}</td>
-      <td>{{ a.category }}</td>
-      <td>{{ a.status }}</td>
+    <div class="big-table-container">
 
- <td>
-    <a href="{% url 'asset_detail' a.pk %}">
-    <button class="btn-view">View</button>
-    </a>
+        <table class="table align-middle mb-0">
 
-    <a href="{% url 'edit_asset' a.pk %}">
-    <button class="btn-edit">Edit</button>
-    </a>
+            <thead class="gradient-table-header">
+                <tr>
+                    <th class="ps-4">Name</th>
+                    <th>Serial</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th class="pe-4 text-center">Actions</th>
+                </tr>
+            </thead>
 
-    <form action="{% url 'delete_asset' a.pk %}" method="post" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="btn-delete" onclick="return confirm('Delete?')">Delete</button>
-  </form>
- </td>
-    </tr>
-    {% empty %}
-      <tr><td colspan="5">No assets found.</td></tr>
-    {% endfor %}
-  </table>
-</body>
-</html>
+            <tbody>
+                {% for a in assets %}
+                <tr>
+                    <td class="fw-semibold ps-4">{{ a.name }}</td>
+                    <td>{{ a.serial_number }}</td>
+                    <td>{{ a.category }}</td>
+
+                    <td>
+                        {% if a.status == "available" %}
+                            <span class="badge-soft-success">Available</span>
+                        {% elif a.status == "unavailable" %}
+                            <span class="badge-soft-danger">Unavailable</span>
+                        {% else %}
+                            <span class="badge-soft-purple">Checked Out</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center pe-4">
+
+                        <a href="{% url 'asset_detail' a.pk %}">
+                            <button class="btn-action btn-view">View</button>
+                        </a>
+
+                        <a href="{% url 'edit_asset' a.pk %}">
+                            <button class="btn-action btn-edit">Edit</button>
+                        </a>
+
+                        <form action="{% url 'delete_asset' a.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn-action btn-delete" onclick="return confirm('Delete this asset?')">
+                                Delete
+                            </button>
+                        </form>
+
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted" style="font-size:17px;">
+                        No assets found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

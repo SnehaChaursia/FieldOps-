@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Add Reservation{% endblock %}
+{% block title %}Add Maintenance{% endblock %}
 
 {% block content %}
-
 <style>
-    .reservation-card {
-        max-width: 520px;
+    .maintenance-card {
+        max-width: 600px;
         margin: 0 auto;
         border-radius: 18px;
         padding: 32px;
@@ -44,12 +43,8 @@
 </style>
 
 <div class="container mt-4">
-
-    <div class="reservation-card">
-
-        <h2 class="text-center fw-bold mb-4" style="color:#1e293b;">
-            Add Reservation
-        </h2>
+    <div class="maintenance-card">
+        <h2 class="text-center fw-bold mb-4" style="color:#1e293b;">Add Maintenance</h2>
 
         {% if messages %}
             {% for message in messages %}
@@ -66,37 +61,43 @@
                 <select name="asset" class="form-select" required>
                     <option value="">-- Select Asset --</option>
                     {% for a in assets %}
-                    <option value="{{ a.id }}">{{ a.name }} ({{ a.serial_number }})</option>
+                        <option value="{{ a.id }}">{{ a.name }} ({{ a.serial_number }})</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <!-- Username -->
+            <!-- Start Date -->
             <div>
-                <label class="fw-semibold mb-1">User Name</label>
-                <input type="text" name="user_name" class="form-control"
-                       placeholder="Enter user name" required>
+                <label class="fw-semibold mb-1">Start Date & Time</label>
+                <input type="datetime-local" name="start_date" class="form-control" required>
             </div>
 
-            <!-- Check-in -->
+            <!-- End Date -->
             <div>
-                <label class="fw-semibold mb-1">Check-in Date & Time</label>
-                <input type="datetime-local" name="checkin_date" class="form-control" required>
+                <label class="fw-semibold mb-1">End Date & Time</label>
+                <input type="datetime-local" name="end_date" class="form-control" required>
             </div>
 
-            <!-- Days -->
+            <!-- Hours -->
             <div>
-                <label class="fw-semibold mb-1">Days</label>
-                <input name="days" type="number" min="1" value="1" class="form-control" required>
+                <label class="fw-semibold mb-1">Hours</label>
+                <input type="number" name="hours" min="1" class="form-control" placeholder="Maintenance hours">
             </div>
 
-            <button type="submit" class="btn btn-purple mt-2">
-                Book Reservation
-            </button>
+            <!-- Cost -->
+            <div>
+                <label class="fw-semibold mb-1">Cost</label>
+                <input type="number" name="cost" min="0" step="0.01" class="form-control" placeholder="Maintenance cost">
+            </div>
 
+            <!-- Notes -->
+            <div>
+                <label class="fw-semibold mb-1">Notes</label>
+                <textarea name="notes" class="form-control" rows="2" placeholder="Additional notes..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-purple mt-2">Schedule Maintenance</button>
         </form>
-
     </div>
 </div>
-
 {% endblock %}

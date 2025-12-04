@@ -1,84 +1,116 @@
-<!doctype html>
-<html>
-<head>
-  <title>Reservations</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 0 20px 40px;
-    }
-    nav {
-      background: #1f2933;
-      color: #fff;
-      padding: 10px 20px;
-      margin: 0 -20px 20px;
-    }
-    nav a {
-      color: #e5e7eb;
-      text-decoration: none;
-      margin-right: 12px;
-      font-size: 14px;
-    }
-    nav a:hover {
-      color: #ffffff;
-      text-decoration: underline;
-    }
-    h1 {
-      color: #111827;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #ffffff;
-      border-radius: 6px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
-    th, td {
-      padding: 8px 10px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-      font-size: 14px;
-    }
-    th {
-      background: #f3f4f6;
-      font-weight: 600;
-    }
-    tr:nth-child(even) td {
-      background: #f9fafb;
-    }
-  </style>
-</head>
-<body>
-  <nav>
-    <a href="{% url 'dashboard' %}">Home</a> |
-    <a href="{% url 'asset_list' %}">Assets</a> |
-    <a href="{% url 'add_asset' %}">Add Asset</a> |
-    <a href="{% url 'reservation_list' %}">Reservations</a> |
-    <a href="{% url 'add_reservation' %}">Add Reservation</a>
-  </nav>
+{% extends "base.html" %}
 
-  <h1>Reservations</h1>
-  <table>
-    <tr><th>Asset</th><th>User</th><th>Check-in</th><th>Check-out</th><th>Status</th><th>Action</th></tr>
-    {% for r in reservations %}
-      <tr>
-        <td>{{ r.asset.name }}</td>
-        <td>{{ r.user_name }}</td>
-        <td>{{ r.check_in }}</td>
-        <td>{{ r.check_out }}</td>
-        <td>{{ r.status }}</td>
-        <td>
-          {% if r.status == "booked" %}
-            <a href="{% url 'checkout_reservation' r.pk %}">Checkout</a>
-          {% else %}
-            -
-          {% endif %}
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
-</body>
-</html>
+{% block content %}
+
+<style>
+    /* Increase table width + row height */
+    .reservations-table {
+        font-size: 1rem;
+        width: 100%;
+    }
+
+    .reservations-table th {
+        padding: 16px;
+        font-size: 1.05rem;
+    }
+
+    .reservations-table td {
+        padding: 18px 16px;
+    }
+
+    /* Smooth box look */
+    .reservations-card {
+        border-radius: 20px;
+        border: 0;
+        overflow: hidden;
+    }
+
+    /* Status colors */
+    .status-booked {
+        background: #ff6b6b !important; /* soft red */
+        color: white !important;
+    }
+
+    .status-checked {
+        background: #51cf66 !important; /* fresh green */
+        color: white !important;
+    }
+
+    .status-returned {
+        background: #4dabf7 !important; /* light blue */
+        color: white !important;
+    }
+
+    /* Button Purple */
+    .btn-checkout {
+        background: #9370DB !important;  /* soft purple */
+        color: white !important;
+        font-weight: 600;
+        border-radius: 10px;
+    }
+
+    .btn-checkout:hover {
+        background: #8058d6 !important;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <h2 class="mb-4 fw-bold text-primary">Reservations</h2>
+
+    <div class="card shadow-sm reservations-card">
+        <div class="card-body">
+
+            <table class="table table-hover align-middle reservations-table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Asset</th>
+                        <th>User</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for r in reservations %}
+                    <tr>
+                        <td class="fw-semibold">{{ r.asset.name }}</td>
+                        <td>{{ r.user_name }}</td>
+                        <td>{{ r.check_in }}</td>
+                        <td>{{ r.check_out }}</td>
+
+                        <td>
+                            {% if r.status == "booked" %}
+                                <span class="badge px-4 py-2 rounded-pill status-booked">Booked</span>
+                            {% elif r.status == "checked_out" %}
+                                <span class="badge px-4 py-2 rounded-pill status-checked">Checked-out</span>
+                            {% elif r.status == "returned" %}
+                                <span class="badge px-4 py-2 rounded-pill status-returned">Returned</span>
+                            {% else %}
+                                <span class="badge bg-secondary px-4 py-2 rounded-pill">{{ r.status }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if r.status == "booked" %}
+                                <a href="{% url 'checkout_reservation' r.pk %}"
+                                   class="btn btn-sm btn-checkout px-3 py-2">
+                                    Checkout
+                                </a>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

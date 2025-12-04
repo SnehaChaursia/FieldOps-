@@ -1,0 +1,21 @@
+<nav>
+    <div class="nav-left">
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      <a href="{% url 'asset_list' %}">Assets</a>
+      <a href="{% url 'add_asset' %}">Add Asset</a>
+      <a href="{% url 'reservation_list' %}">Reservations</a>
+      <a href="{% url 'add_reservation' %}">Add Reservation</a>
+      <a href="{% url 'add_maintenance' %}">Add Maintenance</a>
+
+      <!-- MAINTENANCE LIST LINK ALSO ADD KARLO -->
+      <a href="{% url 'maintenance_list' %}">Maintenance Board</a>
+    </div>
+
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn" style="background:none; border:none; color:white; cursor:pointer;">
+        Logout
+    </button>
+</form>
+
+</nav>
