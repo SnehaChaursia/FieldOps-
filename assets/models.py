@@ -6,7 +6,6 @@ import qrcode
 
 User = get_user_model()
 
-
 class Asset(models.Model):
     STATUS_CHOICES = [
         ("available", "Available"),

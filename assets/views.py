@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Asset, Reservation, Maintenance, AuditLog   # <-- ADDED
-from django.utils import timezone
+from .models import Asset, Reservation, Maintenance, AuditLog   
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 
-import csv                    # <-- ADDED
-from django.http import HttpResponse   # <-- ADDED
-from reportlab.pdfgen import canvas     # <-- ADDED
+import csv                   
+from django.http import HttpResponse   
+from reportlab.pdfgen import canvas     
 
 
 @login_required
